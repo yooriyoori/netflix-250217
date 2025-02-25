@@ -23,6 +23,66 @@ const getMovies = async () => {
     fetchMovies2(),
   ]);
 
+  const nowplayingUl = document.querySelector(".nowPlaying ul");
+  const upcomingUl = document.querySelector(".upcoming ul");
+  const topratedUl = document.querySelector(".toprated ul");
+
+  // CreateElement
+  const createElement = (movie, index, category) => {
+    console.log(movie);
+    const {
+      adult,
+      genre_ids,
+      id,
+      overview,
+      poster_path,
+      release_date,
+      title,
+      vote_average,
+    } = movie;
+    const li = document.createElement("li");
+    const moviePoster = document.createElement("div");
+    const movieTitle = document.createElement("div");
+    const movieDesc = document.createElement("div");
+    const img = document.createElement("img");
+    const ageLimit = document.createElement("span");
+    const movieNum = document.createElement("span");
+    const release = document.createElement("span");
+    const vote = document.createElement("span");
+
+    img.src = `https://image.tmdb.org/t/p/original/${poster_path}`;
+
+    const adultKo = adult === false ? "ALL" : "18";
+    ageLimit.innerText = adultKo;
+
+    movieNum.innerText = index + 1;
+
+    movieTitle.innerText = title;
+
+    release.innerText = release_date;
+
+    vote.innerText = `⭐${parseFloat(vote_average).toFixed(2)}`;
+
+    moviePoster.className = "moviePoster";
+    movieTitle.className = "movieTitle";
+    movieDesc.className = "movieDesc";
+    li.className = id;
+    li.setAttribute("data-category", category);
+
+    movieDesc.append(release, vote);
+    moviePoster.append(img, ageLimit, movieNum);
+    li.append(moviePoster, movieTitle, movieDesc);
+    if (category === "nowplaying") {
+      nowplayingUl.appendChild(li);
+    }
+  };
+
+  // Now Playing
+  movies1.forEach((movie, index) => {
+    createElement(movie, index, "nowplaying");
+  });
+
+  // Main Slide
   const mainSlider = document.querySelector(".mainSlider");
 
   movies1.forEach((movie) => {
@@ -71,4 +131,42 @@ naviLis.forEach((naviLi) => {
       menuBg.style.opacity = "0";
     });
   });
+});
+
+//Accordion
+const contents = document.querySelectorAll(".content");
+contents[0].style.display = "block";
+const titles = document.querySelectorAll(".title");
+titles.forEach((title) => {
+  title.addEventListener("click", () => {
+    contents.forEach((item) => {
+      item.style.display = "none";
+    });
+    titles.forEach((item) => {
+      if (item !== title) {
+        item.classList.remove("active");
+      }
+    });
+    const content = title.nextElementSibling;
+    if (title.classList.contains("active")) {
+      title.classList.remove("active");
+      content.style.display = "none";
+    } else {
+      title.classList.add("active");
+      content.style.display = "block";
+    }
+  });
+});
+
+// Search Modal
+const searchBtn = document.querySelector(".fa-magnifying-glass");
+const modalSearch = document.querySelector(".modal-search");
+const close = document.querySelector(".close");
+
+searchBtn.addEventListener("click", () => {
+  modalSearch.classList.add("active");
+});
+
+close.addEventListener("click", () => {
+  modalSearch.classList.remove("active");
 });
